@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tap Universe</title>
+    <style>
+        body {
+            background-image: url('./static/bg2.webp'); /* Replace with your image path */
+            background-size: cover;
+            background-repeat: repeat;
+            background-attachment: fixed;
+        }
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .item {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            margin: 20px;
+            padding: 20px;
+            max-width: 300px;
+            min-width: 250px;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        .item h2 {
+            font-size: 24px;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+        .item p {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #666;
+        }
+        .item img {
+            width: 200px;
+            height: 200px;
+            margin: 10px auto;
+            display: block;
+        }
+        .item ul {
+            list-style: none;
+            margin: 10px 0;
+            padding: 0;
+        }
+        .item li {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        nav {
+            background-color: #000;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown button {
+            font-size: 16px;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .header {
+            margin-top: 190px; /* Adjust this value to move the header down */
+            text-align: center;
+            background-color: rgba(92, 255, 92, 0.799);
+            color: rgb(0, 0, 0);
+            /*padding: 20px;*/
+            border-radius: 350px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            font-size: 36px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+			max-width: 280px; /* Set the maximum width */
+            margin-left: auto; /* Center align */
+            margin-right: auto; /* Center align */
+        }
+        .header a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        {% if session.username %}
+            <a href="/my_favorites">My Favorites</a>
+            <a href="/my_profile">My Profile</a>
+            <a href="/logout">Log out</a>
+        {% else %}
+            <a href="/auth">Login</a>
+        {% endif %}
+        {% if session.username == 'admin' %}
+            <a href="/create_item">Create Item</a>
+            <a href="/users">Manage Users</a>
+        {% endif %}
+        {% if session.username %}
+            <a href="/create_item">Create Item</a>
+        {% endif %}
+    </nav>
+    <div id="result_msg" class="warning"></div>
+    <script>
+        var resultMsg = "{{ result_msg }}";
+        if (resultMsg !== "" || resultMsg != null) {
+            document.getElementById("result_msg").innerHTML = resultMsg;
+        }
+    </script>
+    <div class="dropdown">
+        <button>Choose a category</button>
+        <div class="dropdown-content">
+            <a href="/?category=All">All</a>
+            <a href="/?category=vehicles">Vehicles</a>
+            <a href="/?category=computers">Computers</a>
+            <a href="/?category=phones">Phones</a>
+            <a href="/?category=private_lessons">Private Lessons</a>
+        </div>
+    </div>
+    <h1 class="header">
+        <a href="/portal"><u>
+            Enter<br>
+            The<br>
+            Portal
+        </u></a>
+    </h1>
+    <div class="items-container">
+        <!-- Loop through the items and display each item -->
+        {% for item in items %}
+            <a href="/item/{{ item.name }}">
+                <div class="item">
+                    <h2>{{ item.name }}</h2>
+                    <img src="{{ item.image }}" alt="{{ item.name }}">
+                    <ul>
+                        <li>Price: {{ item.price }}</li>
+                        <li>Description: {{ item.description }}</li>
+                        <li>Category: {{ item.category }}</li>
+                    </ul>
+                </div>
+            </a>
+        {% endfor %}
+        <div>
+            {% if current_page > 1 %}
+                <a href="?page={{ current_page - 1 }}">Previous</a>
+            {% endif %}
+        
+            {% for page_num in range(1, total_pages + 1) %}
+                {% if page_num == current_page %}
+                    <strong>{{ page_num }}</strong>
+                {% else %}
+                    <a href="?page={{ page_num }}">{{ page_num }}</a>
+                {% endif %}
+            {% endfor %}
+        
+            {% if current_page < total_pages %}
+                <a href="?page={{ current_page + 1 }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

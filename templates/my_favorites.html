@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Favorites List</title>
+	<style>
+	.items-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+	}
+	.item {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	margin: 20px;
+	padding: 20px;
+	max-width: 300px;
+	min-width: 250px;
+	text-align: center;
+	transition: all 0.3s ease-in-out;
+	cursor: pointer;
+	}
+
+	.item:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+	}
+
+	.item h2 {
+		font-size: 24px;
+		margin: 10px 0;
+		text-transform: uppercase;
+	}
+
+	.item p {
+		font-size: 16px;
+		margin: 10px 0;
+		color: #666;
+	}
+
+	.item img {
+		width: 200px;
+		height: 200px;
+		margin: 10px auto;
+		display: block;
+	}
+
+	.item ul {
+		list-style: none;
+		margin: 10px 0;
+		padding: 0;
+	}
+
+	.item li {
+		font-size: 14px;
+		margin-bottom: 5px;
+	}
+	nav {
+			background-color: #333;
+			overflow: hidden;
+	}
+	nav a {
+			float: left;
+			color: white;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+	}
+	nav a:hover {
+			background-color: #ddd;
+			color: black;
+	}
+	</style>
+	<style>
+      /* Style the dropdown container */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      
+      /* Style the dropdown button */
+      .dropdown button {
+        font-size: 16px;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+      }
+      
+      /* Style the dropdown content */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        border-radius: 4px;
+      }
+      
+      /* Style the links inside the dropdown */
+      .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+      
+      /* Change the link color on hover */
+      .dropdown-content a:hover {
+        background-color: #ddd;
+      }
+      
+      /* Show the dropdown content when the dropdown button is clicked */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+</style>
+</head>
+<body>
+	<nav>
+		<a href="/">Home</a>
+		{% if session.username %}
+			<a href="/my_favorites">My Favorites</a>
+        	<a href="/logout">Log out</a>
+    	{% else %}
+        	<a href="/auth">Login</a>
+    	{% endif %}
+		{% if session.username == 'admin' %}
+		<a href="/create_item">Create Item</a>
+		<a href="/users">Manage Users</a>
+		{% endif %}
+		{% if session.username  %}
+		<a href="/create_item">Create Item</a>
+		{% endif %}
+		
+	</nav>
+	<div id="result_msg" class="warning"></div>
+	<script>
+		var resultMsg = "{{ result_msg }}";
+		if (resultMsg !== "" || resultMsg != null) {
+		document.getElementById("result_msg").innerHTML = resultMsg;
+		}
+	</script>
+	
+	<h1 style="text-align: center">Items List</h1>
+	<div class="items-container">
+		<!-- Loop through the items and display each item -->
+		{% for item in favorite_items %}
+			<a href="/item/{{ item.name }}">
+				<div class="item">
+					<h2>{{ item.name }}</h2>
+					<img src="{{ item.image }}" alt="{{ item.name }}">
+					<ul>
+						<li>Price: {{ item.price }}</li>
+						<li>Descritpion: {{ item.description }}</li>
+						<li>Category: {{ item.category }}</li>
+					</ul>
+				</div>
+			</a>
+		{% endfor %}
+	</div>
+</body>
+</html>

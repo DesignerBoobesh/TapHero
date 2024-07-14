@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    form {
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      color: #555;
+    }
+
+    input[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0069d9;
+    }
+
+    textarea {
+      height: 150px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+      margin-top: 50px;
+    }
+
+    label[for="category"] {
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  select[name="category"] {
+    display: inline-block;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+    font-size: 16px;
+    color: #555;
+  }
+
+  select[name="category"] option[value=""] {
+    display: none;
+  }
+  select[name="size"] {
+    display: inline-block;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+    font-size: 16px;
+    color: #555;
+  }
+
+  select[name="size"] option[value=""] {
+    display: none;
+  }
+
+  nav {
+			background-color: #333;
+			overflow: hidden;
+	}
+	nav a {
+			float: left;
+			color: white;
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+	}
+	nav a:hover {
+			background-color: #ddd;
+			color: black;
+	}
+  
+  .warning {
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+		<a href="/">Home</a>
+		{% if session.username %}
+        	<a href="/logout">Log out</a>
+    	{% else %}
+        	<a href="/auth">Login</a>
+    	{% endif %}
+    <a href="/create_item">Create Item</a>
+		{% if session.username == 'admin' %}
+		<a href="/users">Manage Users</a>
+		{% endif %}
+	</nav>
+  <div id="result_msg" class="warning"></div>
+  <script>
+    var resultMsg = "{{ result_msg }}";
+    if (resultMsg !== "" || resultMsg != null) {
+      document.getElementById("result_msg").innerHTML = resultMsg;
+    }
+
+    // Function to show/hide fields based on selected category
+    function showHideFields() {
+            var category = document.getElementById("category").value;
+            if(category){console.log(category);}
+            else{console.log("Boşş");}
+            var vehiclesFields = document.getElementById("vehiclesFields");
+            var computersFields = document.getElementById("computersFields");
+            var phonesFields = document.getElementById("phonesFields");
+            var privateLessonsFields = document.getElementById("privateLessonsFields");
+
+            vehiclesFields.style.display = category === 'vehicles' ? "block" : "none";
+            computersFields.style.display = category === 'computers' ? "block" : "none";
+            phonesFields.style.display = category === 'phones' ? "block" : "none";
+            privateLessonsFields.style.display = category === 'private_lessons' ? "block" : "none";
+        }
+
+    //document.getElementById("category").addEventListener("change", showFields);
+
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <h1>Create New Item</h1>
+
+  <form id="itemForm" action="/create_item" method="POST">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="price">Price:</label>
+    <input type="text" id="price" name="price" required>
+
+    <label for="category">Category:</label>
+    <select id="category" name="category" required>
+      <option value="vehicles">Vehicle</option>
+      <option value="computers">Computer</option>
+      <option value="phones">Phone</option>
+      <option value="private_lessons">Private Lesson</option>
+    </select>
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required>
+
+    <label for="seller_mail" id="seller_mail">Seller Mail:</label>
+    <input type="text" id="seller_mail" name="seller_mail">
+
+    <label for="seller_phone" id="seller_phone">Seller Phone:</label>
+    <input type="text" id="seller_phone" name="seller_phone">
+    <label for="is_active">Active:</label>
+    <label for="is_active">Yes</label>
+    <input type="radio" id="is_active" name="is_active" value="true" checked>
+    <label for="is_active">No</label>
+    <input type="radio" id="is_active" name="is_active" value="false">
+    
+    
+
+
+    <label for="image">Image URL:</label>
+    <input type="text" id="image" name="image">
+
+    <label for="type" id="typeLabel" style="display: none;">Type:</label>
+    <input type="text" id="type" name="type" style="display: none;">
+
+    <label for="brand" id="brandLabel" style="display: none;">Brand:</label>
+    <input type="text" id="brand" name="brand" style="display: none;">
+
+    <label for="model" id="modelLabel" style="display: none;">Model:</label>
+    <input type="text" id="model" name="model" style="display: none;">
+    <!-- Vehicles Fields -->
+    <div id="vehiclesFields" style="display: none; margin-top: 20px;">
+      {% include 'vehicles_fields.html' %}
+    </div>
+
+    <!-- Computers Fields -->
+    <div id="computersFields" style="display: none; margin-top: 20px;">
+        {% include 'computers_fields.html' %}
+    </div>
+
+    <!-- Phones Fields -->
+    <div id="phonesFields" style="display: none; margin-top: 20px;">
+        {% include 'phones_fields.html' %}
+    </div>
+
+    <!-- Private Lessons Fields -->
+    <div id="privateLessonsFields" style="display: none; margin-top: 20px;">
+        {% include 'private_lessons_fields.html' %}
+    </div>
+    <div id="additionalFields">
+      <!-- Additional fields will be appended here -->
+    </div>
+    <button type="button" id="addFieldButton">Add Field</button>
+
+    <input type="submit" value="Create Item">
+  </form>
+  <script>
+    $(document).ready(function() {
+            var fieldIndex = 1;
+
+            $('#addFieldButton').click(function() {
+                var fieldName = prompt('Enter field name:');
+                if (fieldName) {
+                    var newFieldHtml = `
+                        <div>
+                            <label for="field_${fieldIndex}">Field ${fieldName}:</label>
+                            <input type="text" id="field_${fieldIndex}" name="${fieldName}">
+                        </div>
+                    `;
+                    $('#additionalFields').append(newFieldHtml);
+                    fieldIndex++;
+                }
+            });
+        });
+    // Call the function initially to show/hide fields based on the selected category
+    showHideFields();
+    document.getElementById("category").addEventListener("change", showHideFields);
+    document.getElementById("itemForm").addEventListener("submit", function(event) {
+        var formFields = this.elements;
+        for (var i = 0; i < formFields.length; i++) {
+            var field = formFields[i];
+            if (field.type !== "submit" && field.value === "") {
+                field.parentNode.removeChild(field);
+            }
+        }
+    });
+    
+  </script>
+</body>
+
+</html>

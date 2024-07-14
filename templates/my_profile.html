@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile</title>
+    <style>
+        /* General Styles */
+        body {
+            background-image: url('./static/bg2.webp');
+            background-size: cover;
+            background-repeat: repeat;
+            background-attachment: fixed;
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* Fixed Header */
+        .fixed-header {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #474747;
+            color: rgb(237, 0, 0);
+            padding: 10px;
+            border-radius: 20px;
+            z-index: 1000;
+        }
+
+        /* Result Message */
+        #result_msg {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 16px;
+            display: none;
+        }
+
+        /* Total Money Container */
+        .total-money-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #2a2a2a;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: end;
+            justify-content: end;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        /* Items Container */
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 3px;
+        }
+
+        /* Item Styles */
+        .item {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            margin: 20px;
+            padding: 20px;
+            max-width: 300px;
+            min-width: 250px;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .item h2 {
+            font-size: 24px;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+
+        .item p {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .item img {
+            width: 200px;
+            height: 200px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .item ul {
+            list-style: none;
+            margin: 10px 0;
+            padding: 0;
+        }
+
+        .item li {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        /* Mercenary Shop */
+        .mercenary-shop {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Mercenary */
+        .mercenary {
+            background-color: #474747;
+            width: 400px;
+            height: 740px;
+            border-radius: 10px;
+            padding: 20px;
+            padding-top: 10px;
+        }
+
+        .mercenary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mercenary-header h2 {
+            margin: 0;
+        }
+
+        .quantity-options button {
+            background-color: #444;
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .recruit-button {
+            display: block;
+            background-color: #e57373;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .mercenary-image img {
+            width: 65%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .gemimage img {
+            width: 18px;
+            height: auto;
+            padding-left: 5px;
+        }
+
+        .mercenary-info {
+            margin-top: 0px;
+        }
+
+        .description-button {
+            background-color: #444;
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .stats div {
+            background-color: #444;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .collect-container {
+            justify-self: center;
+            text-align: center;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            width: 400px;
+            padding: 20px;
+        }
+
+        .collect-button {
+            background-color: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .collect-button:hover {
+            background-color: #ff5500;
+        }
+
+        .stats {
+            background-color: #333;
+            color: #f5c242;
+            padding: 10px;
+            margin-top: 20px;
+            border-top: 2px dashed #f5c242;
+        }
+
+        .stats-shop {
+            background-color: #333;
+            color: #e57373;
+            padding: 10px;
+            margin-top: 0px;
+            border-top: 2px dashed #e57373;
+        }
+
+        .damage-per-second {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        {% if session.username %}
+            <a href="/my_favorites">My Favorites</a>
+            <a href="/my_profile">My Profile</a>
+            <a href="/logout">Log out</a>
+        {% else %}
+            <a href="/auth">Login</a>
+        {% endif %}
+        {% if session.username == 'admin' %}
+            <a href="/create_item">Create Item</a>
+            <a href="/users">Manage Users</a>
+        {% endif %}
+    </nav>
+    <div id="result_msg" class="warning"></div>
+    <script>
+        var resultMsg = "{{ result_msg }}";
+        if (resultMsg !== "" || resultMsg != null) {
+            document.getElementById("result_msg").innerHTML = resultMsg;
+        }
+    </script>
+    <div class="total-money-container">
+        <div class="balance">Total Balance: <span id="total_money">{{ total_money }}</span></div>
+        <div class="gemimage"><img src="./static/gem.png" alt="Gem"></div>
+    </div>
+    
+    <div class="items-container">
+        <div class="mercenary-shop">
+            <div class="collect-container">
+                <button class="collect-button">COLLECT</button>
+                <div class="stats">
+                    <div>Total damage per second:</div>
+                    <div class="damage-per-second">{{ total_damage }}</div>
+                </div>
+            </div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Solar Knight</h2>
+					
+				</div>
+				
+                <button class="recruit-button" data-hero-name="Solar Knight" data-hero-index="1">RECRUIT</button>
+				<div class="price">PRICE: 100K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero1.webp" alt="Solar Knight">
+					<p><b>Knight - protector of the forest, outwardly resembling humanoid trees.</b> </p>
+				</div>
+				
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 1</div>
+						<div>1% PER DAY</div>
+						<div>∞</div>
+					</div>
+					
+				</div>
+			</div>
+	
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Cosmic Scout</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Cosmic Scout" data-hero-index="2">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero2.webp" alt="Cosmic Scout">
+                    <p>Cosmic Scout - in the eyes of civilized citizens, cheap labor.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 5</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Celestial Mage</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Celestial Mage" data-hero-index="3">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero3.webp" alt="Celestial Mage">
+                    <p>Celestial Mage - master of the arcane arts, channeling the power of the stars to cast powerful spells.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 10</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Void Ranger</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Void Ranger" data-hero-index="4">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero4.webp" alt="Void Ranger">
+                    <p>Void Ranger - skilled archer from the depths of space, using void energy to enhance his arrows.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 50</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Star Healer</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Star Healer" data-hero-index="5">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero5.webp" alt="Star Healer">
+                    <p>Star Healer - able to mend wounds with the light of distant stars, restoring health to allies.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 200</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Astral Tech</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Astral Tech" data-hero-index="6">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero6.webp" alt="Astral Tech">
+                    <p>Astral Tech - a technological genius, crafting gadgets and devices that harness astral energy.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 500</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Galactic Barbarian</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Galactic Barbarian" data-hero-index="7">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero7.webp" alt="Galactic Barbarian">
+                    <p>Galactic Barbarian - fierce warrior with unmatched strength, thriving in the chaos of battle.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 2000</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Shadow Rogue</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Shadow Rogue" data-hero-index="8">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero8.webp" alt="Shadow Rogue">
+                    <p>Shadow Rogue - master of stealth and subterfuge, moving unseen and striking from the shadows.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 5000</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Bio-Druid</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Bio-Druid" data-hero-index="9">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero9.webp" alt="Bio-Druid">
+                    <p>Bio-Druid - protector of nature, using bio-engineered plants and creatures to aid in battle.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 10000</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+				</div>
+			</div>
+			<div class="mercenary">
+				<div class="mercenary-header">
+					<h2>Solar Paladin</h2>
+					
+				</div>
+                <button class="recruit-button" data-hero-name="Solar Paladin" data-hero-index="10">RECRUIT</button>
+				<div class="price">PRICE: 500K</div>
+				<div class="mercenary-image">
+					<img src="./static/hero10.webp" alt="Solar Paladin">
+                    <p>Solar Paladin - a holy warrior imbued with the power of the sun, bringing light to the darkest of places.</p>
+				</div>
+				<div class="mercenary-info">
+					<button class="description-button">CHARACTERISTICS</button>
+					<div class="stats-shop">
+						<div>DPS: 100000</div>
+						<div>2% PER DAY</div>
+						<div>∞</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const recruitButtons = document.querySelectorAll('.recruit-button');
+            const collectButton = document.querySelector('.collect-button');
+            const resultMsg = document.getElementById('result_msg');
+            const totalMoneyElement = document.getElementById('total_money');
+            const totalDamage = parseInt("{{ total_damage }}");
+
+            recruitButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const heroName = this.getAttribute('data-hero-name');
+                    const heroIndex = this.getAttribute('data-hero-index');
+
+                    fetch('/add_to_favorites', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ heroName: heroName, heroIndex: heroIndex }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            resultMsg.textContent = `${heroName} joined your Team!`;
+                            resultMsg.style.color = 'green';
+                        } else {
+                            resultMsg.textContent = `Failed to add ${heroName} to your favorites.`;
+                            resultMsg.style.color = 'red';
+                        }
+                        resultMsg.style.display = 'block';
+                        setTimeout(() => {
+                            resultMsg.style.display = 'none';
+                        }, 3000); // Hide the message after 3 seconds
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        resultMsg.textContent = `Failed to add ${heroName} to your favorites.`;
+                        resultMsg.style.color = 'red';
+                        resultMsg.style.display = 'block';
+                        setTimeout(() => {
+                            resultMsg.style.display = 'none';
+                        }, 3000); // Hide the message after 3 seconds
+                    });
+                });
+            });
+
+            collectButton.addEventListener('click', function() {
+                if (collectButton.disabled) return;
+
+                collectButton.disabled = true;
+
+                fetch('/collect_damage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ totalDamage: totalDamage }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const newTotalMoney = data.newTotalMoney;
+                        totalMoneyElement.textContent = newTotalMoney;
+                        resultMsg.textContent = `Collected ${totalDamage}! Total money updated.`;
+                        resultMsg.style.color = 'green';
+                    } else {
+                        resultMsg.textContent = `Failed to collect damage.`;
+                        resultMsg.style.color = 'red';
+                    }
+                    resultMsg.style.display = 'block';
+                    setTimeout(() => {
+                        resultMsg.style.display = 'none';
+                    }, 1000); // Hide the message after 3 seconds
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    resultMsg.textContent = `Failed to collect damage.`;
+                    resultMsg.style.color = 'red';
+                    resultMsg.style.display = 'block';
+                    setTimeout(() => {
+                        resultMsg.style.display = 'none';
+                    }, 3000); // Hide the message after 3 seconds
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        collectButton.disabled = false;
+                    }, 1000); // Re-enable the button after 1 second
+                });
+            });
+        });
+    </script>
+</body>
+</html>
